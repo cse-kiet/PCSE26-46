@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeepFake Detection - SachAI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* dark modern gradient */
+      color: #f4f4f9;
+      line-height: 1.6;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(20, 20, 20, 0.9);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .navbar-brand {
+      color: #00e5ff; /* neon cyan */
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    .navbar-nav {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: #f4f4f9;
+      text-decoration: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link.highlight {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b); /* neon pink-red */
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .nav-link.highlight:hover {
+      opacity: 0.9;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 5rem 2rem;
+      background: linear-gradient(to right, #1f1c2c, #928dab);
+      color: #fff;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(90deg, #00e5ff, #ff4081);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto 2.5rem;
+      color: #e0e0e0;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #00e5ff, #ff4081);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: bold;
+      box-shadow: 0 4px 20px rgba(0, 229, 255, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .cta-button:hover {
+      transform: scale(1.05);
+    }
+
+    /* Features Section */
+    .features {
+      padding: 4rem 2rem;
+      background: #111;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 2.2rem;
+      color: #00e5ff;
+      margin-bottom: 3rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: #1c1c1c;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-card h3 {
+      color: #ff4081;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+      color: #ddd;
+    }
+
+    /* How It Works */
+    .how-it-works {
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, #2c5364, #203a43, #0f2027);
+      color: #fff;
+      text-align: center;
+    }
+
+    .how-it-works h2 {
+      color: #00e5ff;
+      margin-bottom: 2rem;
+    }
+
+    .steps {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .step {
+      flex: 1 1 250px;
+      background: #111;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .step h3 {
+      color: #ff4081;
+      margin-bottom: 1rem;
+    }
+
+    .step p {
+      color: #ccc;
+    }
+
+    /* Footer */
+    footer {
+      background: #0d0d0d;
+      color: #888;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="{{ url_for('homepage') }}" class="navbar-brand">SachAI</a>
+    <div class="navbar-nav">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('detect') }}" class="nav-link">Detect</a>
+        <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+        <a href="{{ url_for('signup') }}" class="nav-link highlight">Sign Up</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>SachAI: Unravel the DeepFake Reality</h1>
+    <p>Deepfakes are more sophisticated than ever. SachAI empowers you with cutting-edge AI to detect manipulated videos and protect truth in the digital era.</p>
+    {% if current_user.is_authenticated %}
+      <a href="{{ url_for('detect') }}" class="cta-button">Start Detection</a>
+    {% else %}
+      <a href="{{ url_for('signup') }}" class="cta-button">Get Started</a>
+    {% endif %}
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <h2>Key Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>🔍 High Accuracy</h3>
+        <p>Our AI model achieves state-of-the-art accuracy in distinguishing real from fake videos.</p>
+      </div>
+      <div class="feature-card">
+        <h3>⚡ Real-Time Analysis</h3>
+        <p>Get results in seconds with clear probability scores and visual insights.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🎯 Easy to Use</h3>
+        <p>Simple upload system, intuitive dashboard, and detailed reports for everyone.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🔒 Secure & Private</h3>
+        <p>Your uploaded videos are encrypted and automatically deleted after analysis.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <h2>How SachAI Works</h2>
+    <div class="steps">
+      <div class="step">
+        <h3>1. Upload</h3>
+        <p>Drag and drop your video file into our secure system.</p>
+      </div>
+      <div class="step">
+        <h3>2. AI Analysis</h3>
+        <p>Our model scans frame-by-frame, detecting micro-expressions, inconsistencies, and artifacts.</p>
+      </div>
+      <div class="step">
+        <h3>3. Instant Results</h3>
+        <p>Receive a confidence score and a visual breakdown of deepfake indicators.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 SachAI | DeepFake Detection Powered by AI</p>
+  </footer>
+</body>
+</html>

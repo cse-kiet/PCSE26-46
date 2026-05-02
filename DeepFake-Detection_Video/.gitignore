@@ -1,0 +1,11 @@
+__pycache__/
+.ipynb_checkpoints/
+model/
+static/frames/
+static/graphs/
+Uploaded_Files/
+*.mp4
+*.jpg
+*.jpeg
+*.png
+*.pt

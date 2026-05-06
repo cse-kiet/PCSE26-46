@@ -32,7 +32,7 @@ Deepfake technology uses GANs to generate highly realistic fake videos. This sys
 
 ## 🖼️ Demo
 
-markdown
+
 ![Home](img/home.jpeg)
 ![Result](img/result.jpeg)
 
